@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - SnowTricks{% endblock %}
+
+{% block content %}
+    <header class="hero-section d-flex align-items-center justify-content-center">
+        <div class="text-center text-white">
+            <h1 class="display-4">Bienvenue sur SnowTricks</h1>
+            <p class="lead">Découvrez et partagez les plus belles figures de snowboard</p>
+        </div>
+        <div id="scroll-down-btn" class="scroll-down">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </header>
+
+    <section id="figures-section" class="container my-5">
+        <div class="row">
+            {% for figure in figures %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ asset('uploads/' ~ figure.image) }}" class="card-img-top" alt="{{ figure.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ figure.name }}</h5>
+                            <p class="card-text">{{ figure.description|slice(0, 100) }}...</p>
+                            <a href="{{ path('figure_show', {'id': figure.id}) }}" class="btn btn-primary">Voir plus</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {# Pagination #}
+        <div class="pagination">
+            {% if figures.previousPage is not null %}
+                <a href="{{ path('home', {'page': figures.previousPage}) }}" class="btn btn-secondary">Précédent</a>
+            {% endif %}
+            {% if figures.nextPage is not null %}
+                <a href="{{ path('home', {'page': figures.nextPage}) }}" class="btn btn-secondary">Suivant</a>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
