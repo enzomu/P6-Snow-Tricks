@@ -3,33 +3,32 @@
 {% block title %}Accueil - SnowTricks{% endblock %}
 
 {% block content %}
-    <header class="hero-section d-flex align-items-center justify-content-center">
-        <div class="text-center text-white">
+    <section class="hero-section">
+        <div class="hero-content text-center">
             <h1 class="display-4">Bienvenue sur SnowTricks</h1>
             <p class="lead">Découvrez et partagez les plus belles figures de snowboard</p>
         </div>
-        <div id="scroll-down-btn" class="scroll-down">
+        <button id="scroll-down-btn" class="scroll-down">
             <i class="fas fa-chevron-down"></i>
-        </div>
-    </header>
-
+        </button>
+    </section>
     <section id="figures-section" class="container my-5">
         <div class="row">
-            {% for figure in figures %}
+            {#{% for figure in figures %}#}
                 <div class="col-md-4 mb-4">
                     <div class="card">
-                        <img src="{{ asset('uploads/' ~ figure.image) }}" class="card-img-top" alt="{{ figure.name }}">
+                       {# <img src="{{ asset('uploads/' ~ figure.image) }}" class="card-img-top" alt="{{ figure.name }}">#}
                         <div class="card-body">
-                            <h5 class="card-title">{{ figure.name }}</h5>
-                            <p class="card-text">{{ figure.description|slice(0, 100) }}...</p>
-                            <a href="{{ path('figure_show', {'id': figure.id}) }}" class="btn btn-primary">Voir plus</a>
+                            <h5 class="card-title">Figure name</h5> {#figure.name#}
+                            <p class="card-text">une super figure...</p> {# figure.description|slice(0, 100)#}
+                            <a href="{{ path('figure') }}" class="btn btn-primary">Voir plus</a>  {#{'id': figure.id}#}
                         </div>
                     </div>
                 </div>
-            {% endfor %}
+           {# {% endfor %}#}
         </div>
 
-        {# Pagination #}
+       {#  Pagination
         <div class="pagination">
             {% if figures.previousPage is not null %}
                 <a href="{{ path('home', {'page': figures.previousPage}) }}" class="btn btn-secondary">Précédent</a>
@@ -37,6 +36,6 @@
             {% if figures.nextPage is not null %}
                 <a href="{{ path('home', {'page': figures.nextPage}) }}" class="btn btn-secondary">Suivant</a>
             {% endif %}
-        </div>
+        </div>#}
     </section>
 {% endblock %}

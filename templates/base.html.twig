@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SnowTricks{% endblock %}</title>
-    <link rel="stylesheet" href="{{ asset('public/build/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('sb-admin-2.css') }}">
 </head>
 <body>
 
@@ -16,6 +16,9 @@
 
 {% include 'partials/footer.html.twig' %}
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('js/sb-admin-2.js') }}"></script>
+<script src="{{ asset('js/scroll.js') }}"></script>
 </body>
 </html>

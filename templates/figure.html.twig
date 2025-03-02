@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-body position-relative">
+              {#  {% if app.user %}#}
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <a href="{{ path('update_figure') }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a> {#{ 'id': trick.id }#}
+                        {#<a href="{{ path('trick_delete') }}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>#}
+                    </div>
+               {# {% endif %}#}
+                <h1 class="text-center">{#{{ trick.name }}#}trick name</h1>
+                <div class="text-center">
+                   {# <img src="{{ asset(trick.featuredImage) }}" class="img-fluid" alt="{{ trick.name }}">#} trick image
+                </div>
+                <div class="row mt-3">
+                 {#   {% for media in trick.media %}
+                        <div class="col-md-3">
+                            {% if media.type == 'image' %}
+                                <img src="{{ asset(media.url) }}" class="img-fluid" alt="">
+                            {% else %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}#}
+                    trick images
+                </div>
+               {# <p class="mt-3">{{ trick.description }}</p>#} <h2>trick description</h2>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h3>Commentaires</h3>
+           {# {% if app.user %}
+                <form method="post" action="{{ path('comment_add', { 'id': trick.id }) }}">
+                    <textarea name="comment" class="form-control" rows="3" placeholder="Laisser un commentaire..."></textarea>
+                    <button type="submit" class="btn btn-primary mt-2">Envoyer</button>
+                </form>
+            {% endif %}#}
+            <div class="mt-3">
+                {#{% for comment in trick.comments %}
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <strong>{{ comment.user.username }}</strong>
+                            <p>{{ comment.content }}</p>
+                            <small class="text-muted">Posté le {{ comment.createdAt|date('d/m/Y H:i') }}</small>
+                        </div>
+                    </div>
+                {% endfor %}#}
+            </div>
+            <div class="text-center mt-3">
+                <button class="btn btn-secondary">Charger plus</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
