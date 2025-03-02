@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1 class="h3 mb-4 text-gray-800">Modifier la figure</h1>
+
+      {#  {{ form_start(trickForm, {'attr': {'class': 'needs-validation', 'novalidate': 'true'}}) }}#}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Image principale</h6>
+                <a href="#" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
+            </div>
+{#            <div class="card-body text-center">
+                {% if trick.mainImage %}
+                    <img src="{{ asset('uploads/' ~ trick.mainImage) }}" class="img-fluid rounded shadow" alt="Image principale">
+                {% endif %}
+                {{ form_widget(trickForm.mainImage, {'attr': {'class': 'form-control mt-3'}}) }}
+            </div>#}
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Galerie</h6>
+            </div>
+       {#     <div class="card-body">
+                <div class="row">
+                    {% for media in trick.media %}
+                        <div class="col-md-3 mb-3 text-center">
+                            {% if media.type == 'image' %}
+                                <img src="{{ asset('uploads/' ~ media.path) }}" class="img-fluid rounded shadow" alt="Media">
+                            {% else %}
+                                <iframe width="100%" height="150" src="{{ media.path }}" allowfullscreen></iframe>
+                            {% endif %}
+                            <div class="mt-2">
+                                <a href="#" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                <a href="#" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {{ form_widget(trickForm.media, {'attr': {'class': 'form-control mt-3'}}) }}
+            </div>#}
+        </div>
+
+{#        <div class="form-group">
+            {{ form_label(trickForm.name, 'Nom de la figure', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(trickForm.name, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(trickForm.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(trickForm.description, {'attr': {'class': 'form-control', 'rows': '5'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(trickForm.category, 'Catégorie', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(trickForm.category, {'attr': {'class': 'form-control'}}) }}
+        </div>#}
+
+        <div class="d-flex justify-content-between">
+            <div>
+                <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i> Supprimer</a>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </div>
+
+        {#{{ form_end(trickForm) }}#}
+    </div>
+{% endblock %}
