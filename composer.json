@@ -4,10 +4,10 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.2",
         "ext-ctype": "*",
-        "ext-iconv": "*",
         "ext-dom": "*",
+        "ext-iconv": "*",
         "doctrine/dbal": "^3",
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.4",
@@ -44,6 +44,8 @@
         "symfony/web-link": "6.4.*",
         "symfony/webpack-encore-bundle": "^2.2",
         "symfony/yaml": "6.4.*",
+        "symfonycasts/reset-password-bundle": "^1.23",
+        "symfonycasts/verify-email-bundle": "^1.17",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"
     },
