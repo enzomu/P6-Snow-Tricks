@@ -25,8 +25,14 @@ class Figure
     #[ORM\Column(length: 50)]
     private ?string $category = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $mainMedia = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $mediaGallery = [];
+
     #[ORM\ManyToOne(inversedBy: 'figures')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $author = null;
 
     #[ORM\Column]
@@ -84,6 +90,28 @@ class Figure
     {
         $this->category = $category;
 
+        return $this;
+    }
+
+    public function getMainMedia(): ?string
+    {
+        return $this->mainMedia;
+    }
+
+    public function setMainMedia(?string $mainMedia): self
+    {
+        $this->mainMedia = $mainMedia;
+        return $this;
+    }
+
+    public function getMediaGallery(): ?array
+    {
+        return $this->mediaGallery;
+    }
+
+    public function setMediaGallery(?array $mediaGallery): self
+    {
+        $this->mediaGallery = $mediaGallery;
         return $this;
     }
 

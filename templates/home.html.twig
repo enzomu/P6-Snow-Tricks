@@ -2,6 +2,8 @@
 
 {% block title %}Accueil - SnowTricks{% endblock %}
 
+{% dump(figures) %}
+
 {% block content %}
     <section class="hero-section">
         <div class="hero-content text-center">
@@ -14,18 +16,28 @@
     </section>
     <section id="figures-section" class="container my-5">
         <div class="row">
-            {#{% for figure in figures %}#}
+            {% for figure in figures %}
                 <div class="col-md-4 mb-4">
                     <div class="card">
                        {# <img src="{{ asset('uploads/' ~ figure.image) }}" class="card-img-top" alt="{{ figure.name }}">#}
                         <div class="card-body">
-                            <h5 class="card-title">Figure name</h5> {#figure.name#}
-                            <p class="card-text">une super figure...</p> {# figure.description|slice(0, 100)#}
-                            <a href="{{ path('figure') }}" class="btn btn-primary">Voir plus</a>  {#{'id': figure.id}#}
+                            <h5 class="card-title">{{ figure.name }}</h5>
+                            <p class="card-text">{{ figure.description|slice(0, 100) }}</p>{#{'id': figure.id}#}
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a href="{{ path('figure', {'id': figure.id}) }}" class="btn btn-primary">Voir plus</a>
+                            <div>
+                                <a href="{{ path('update_figure', {'id': figure.id}) }}" class="btn btn-sm btn-primary">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <a href="{{ path('figure', {'id': figure.id}) }}" class="btn btn-sm btn-danger">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-           {# {% endfor %}#}
+            {% endfor %}
         </div>
 
        {#  Pagination
