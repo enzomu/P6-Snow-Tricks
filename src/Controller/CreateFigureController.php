@@ -2,20 +2,26 @@
 
 namespace App\Controller;
 
+use App\Entity\Figure;
 use App\Form\FigureType;
 use App\Repository\FigureRepository;
-use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class UpdateFigureController extends AbstractController
+class CreateFigureController extends AbstractController
 {
-    #[Route('/update_figure/{id}', name: 'update_figure')]
-    public function index(int $id, FigureRepository $figureRepository, Request $request): Response
+    #[Route('/create_figure', name: 'create_figure')]
+    public function create(Request $request, FigureRepository $figureRepository): Response
     {
-        $figure = $figureRepository->findFigureById($id);
-
+        $figure = new Figure();
+        $figure->setMediaGallery([
+            '', '', ''
+        ]);
+        // $user = $this->getUser();
+        // $figure->setAuthor($user);
         $form = $this->createForm(FigureType::class, $figure);
         $form->handleRequest($request);
 
@@ -24,19 +30,14 @@ class UpdateFigureController extends AbstractController
                 return !empty(trim($media));
             });
             $figure->setMediaGallery($mediaGallery);
-
-            $figure->setUpdatedAt(new \DateTimeImmutable());
-
-
+            $figure->setCreatedAt(new \DateTimeImmutable());
             $figureRepository->save($figure);
 
             return $this->redirectToRoute('home');
         }
 
-        return $this->render('figure_update.html.twig', [
-            'figure' => $figure,
+        return $this->render('figure_create.html.twig', [
             'form' => $form->createView(),
         ]);
     }
-
 }

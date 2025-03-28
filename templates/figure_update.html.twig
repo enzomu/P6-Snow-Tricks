@@ -4,65 +4,91 @@
     <div class="container mt-4">
         <h1 class="h3 mb-4 text-gray-800">Modifier la figure</h1>
 
-      {#  {{ form_start(trickForm, {'attr': {'class': 'needs-validation', 'novalidate': 'true'}}) }}#}
+        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true'}}) }}
 
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary">Image principale</h6>
-                <a href="#" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
+                <h6 class="m-0 font-weight-bold text-primary">Média principal</h6>
             </div>
-{#            <div class="card-body text-center">
-                {% if trick.mainImage %}
-                    <img src="{{ asset('uploads/' ~ trick.mainImage) }}" class="img-fluid rounded shadow" alt="Image principale">
+            <div class="card-body text-center">
+                {% if figure.mainMedia %}
+                    <div class="mb-3">
+                        {% if figure.mainMedia matches '{\.(jpg|jpeg|png|gif)$}' %}
+                            <img src="{{ figure.mainMedia }}" class="img-fluid" style="max-height: 315px;">
+                        {% else %}
+                            <iframe width="100%" height="315" src="{{ figure.mainMedia }}" allowfullscreen></iframe>
+                        {% endif %}
+                    </div>
                 {% endif %}
-                {{ form_widget(trickForm.mainImage, {'attr': {'class': 'form-control mt-3'}}) }}
-            </div>#}
+                {{ form_row(form.mainMedia, {'attr': {'class': 'form-control mt-3'}}) }}
+            </div>
+        </div>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Galerie de médias existants</h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    {% if figure.mediaGallery is defined and figure.mediaGallery is not empty %}
+                        {% for media in figure.mediaGallery %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        {% if media matches '{\.(jpg|jpeg|png|gif)$}' %}
+                                            <img src="{{ media }}" class="img-fluid">
+                                        {% else %}
+                                            <iframe width="100%" height="200" src="{{ media }}" allowfullscreen></iframe>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12">
+                            <p class="text-muted">Aucun média dans la galerie</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Galerie</h6>
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Gérer la galerie de médias</h6>
+                <a href="{{ path('figure_add_media', {'id': figure.id}) }}" class="btn btn-primary btn-sm">
+                    Ajouter un champ de média
+                </a>
             </div>
-       {#     <div class="card-body">
-                <div class="row">
-                    {% for media in trick.media %}
-                        <div class="col-md-3 mb-3 text-center">
-                            {% if media.type == 'image' %}
-                                <img src="{{ asset('uploads/' ~ media.path) }}" class="img-fluid rounded shadow" alt="Media">
-                            {% else %}
-                                <iframe width="100%" height="150" src="{{ media.path }}" allowfullscreen></iframe>
-                            {% endif %}
-                            <div class="mt-2">
-                                <a href="#" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-                                <a href="#" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
-                            </div>
+            <div class="card-body">
+                {% for key, mediaField in form.mediaGallery %}
+                    <div class="mb-3 d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            {{ form_widget(mediaField, {'attr': {'class': 'form-control'}}) }}
                         </div>
-                    {% endfor %}
-                </div>
-                {{ form_widget(trickForm.media, {'attr': {'class': 'form-control mt-3'}}) }}
-            </div>#}
-        </div>
-
-{#        <div class="form-group">
-            {{ form_label(trickForm.name, 'Nom de la figure', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(trickForm.name, {'attr': {'class': 'form-control'}}) }}
-        </div>
-        <div class="form-group">
-            {{ form_label(trickForm.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(trickForm.description, {'attr': {'class': 'form-control', 'rows': '5'}}) }}
-        </div>
-        <div class="form-group">
-            {{ form_label(trickForm.category, 'Catégorie', {'label_attr': {'class': 'form-label'}}) }}
-            {{ form_widget(trickForm.category, {'attr': {'class': 'form-control'}}) }}
-        </div>#}
-
-        <div class="d-flex justify-content-between">
-            <div>
-                <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i> Supprimer</a>
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        <a href="{{ path('figure_remove_media', {'id': figure.id, 'index': key}) }}"
+                           class="btn btn-danger ml-2"
+                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce média ?')">
+                            Supprimer
+                        </a>
+                    </div>
+                {% endfor %}
             </div>
         </div>
 
-        {#{{ form_end(trickForm) }}#}
+        <div class="form-group">
+            {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.category, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="d-flex justify-content-end mt-3">
+           {# <a href="{{ path('figure_delete', {'id': figure.id}) }}" class="btn btn-danger m-1" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette figure ?')">Supprimer</a>#}
+            <button type="submit" class="btn btn-primary m-1">Enregistrer</button>
+        </div>
+        {{ form_end(form) }}
     </div>
 {% endblock %}

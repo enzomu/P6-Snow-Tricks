@@ -2,15 +2,20 @@
 
 namespace App\Controller;
 
+use App\Repository\FigureRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class FigureController extends AbstractController
 {
-    #[Route('/figure', name: 'figure')]
-    public function index(): Response
+    #[Route('/figure/{id}', name: 'figure')]
+    public function index(int $id, FigureRepository $figureRepository): Response
     {
-        return $this->render('figure.html.twig');
+        $figure = $figureRepository->findFigureById($id);
+
+        return $this->render('figure.html.twig', [
+            'figure' => $figure,
+        ]);
     }
 }
