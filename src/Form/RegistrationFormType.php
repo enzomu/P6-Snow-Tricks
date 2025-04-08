@@ -8,6 +8,8 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
@@ -31,6 +33,20 @@ class RegistrationFormType extends AbstractType
                         'message' => 'L\'email "{{ value }}" n\'est pas valide.',
                     ]),
                 ],
+            ])
+            ->add('name', TextType::class, [
+                'label' => 'Nom complet',
+                'attr' => ['class' => 'form-control'],
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Veuillez entrer votre nom.',
+                    ]),
+                ],
+            ])
+            ->add('profilePicture', UrlType::class, [
+                'label' => 'URL de la photo de profil (optionnelle)',
+                'attr' => ['class' => 'form-control'],
+                'required' => false,
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,

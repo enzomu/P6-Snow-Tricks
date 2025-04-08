@@ -1,0 +1,25 @@
+{% if pageCount > 1 %}
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination pagination-sm">
+
+            <li class="page-item {{ previous is not defined ? 'disabled' }}">
+                <a class="page-link" href="{{ previous is defined ? path(route, query|merge({(pageParameterName): previous})) : '#' }}">
+                    &laquo;
+                </a>
+            </li>
+
+            {% for page in pagesInRange %}
+                <li class="page-item {{ page == current ? 'active' }}">
+                    <a class="page-link" href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+                </li>
+            {% endfor %}
+
+            <li class="page-item {{ next is not defined ? 'disabled' }}">
+                <a class="page-link" href="{{ next is defined ? path(route, query|merge({(pageParameterName): next})) : '#' }}">
+                    &raquo;
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+{% endif %}
