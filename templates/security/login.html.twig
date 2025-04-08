@@ -1,31 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Connexion - SnowTricks{% endblock %}
+{% block title %}Connexion{% endblock %}
 
 {% block content %}
     <div class="container mt-4">
         <h1 class="h3 mb-4">Connexion</h1>
 
-        <div class="card shadow">
-            <div class="card-body">
-                {% if error %}
-                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-                {% endif %}
-
-                <form method="post">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Email</label>
-                        <input type="email" id="username" name="_username" class="form-control" required autofocus>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Mot de passe</label>
-                        <input type="password" id="password" name="_password" class="form-control" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Se connecter</button>
-                </form>
+        {% if error %}
+            <div class="alert alert-danger">
+                {{ error.messageKey|trans(error.messageData, 'security') }}
             </div>
-        </div>
+        {% endif %}
+
+        <form method="post">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Adresse email</label>
+                <input type="email"
+                       value="{{ last_username }}"
+                       name="email"
+                       id="email"
+                       class="form-control"
+                       required
+                       autofocus
+                       autocomplete="email">
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password"
+                       name="password"
+                       id="password"
+                       class="form-control"
+                       required
+                       autocomplete="current-password">
+            </div>
+
+            <button class="btn btn-primary" type="submit">
+                Se connecter
+            </button>
+        </form>
     </div>
 {% endblock %}
