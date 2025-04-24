@@ -40,6 +40,7 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
         $this->router = $router;
     }
 
+
     public function authenticate(Request $request): Passport
     {
         $email = $request->request->get('email', '');
@@ -54,8 +55,8 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
         return new Passport(
             new UserBadge($email, function($userIdentifier) {
                 $user = $this->userRepository->findOneBy(['email' => $userIdentifier]);
-                if (!$user || !$user->isVerified()) {
-                    throw new CustomUserMessageAuthenticationException('Votre compte n\'est pas encore vérifié. Vérifiez vos emails.');
+                if (!$user) {
+                    throw new CustomUserMessageAuthenticationException('Email ou mot de passe invalide.');
                 }
                 return $user;
             }),
@@ -65,6 +66,10 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        $user = $token->getUser();
+        if (!$user->isVerified()) {
+            $request->getSession()->getFlashBag()->add('warning', 'Votre compte n\'est pas encore vérifié. Vérifiez vos emails pour accéder à toutes les fonctionnalités.');
+        }
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }

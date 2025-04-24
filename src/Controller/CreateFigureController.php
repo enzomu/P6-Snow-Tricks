@@ -16,12 +16,14 @@ class CreateFigureController extends AbstractController
     #[Route('/create_figure', name: 'create_figure')]
     public function create(Request $request, FigureRepository $figureRepository): Response
     {
+        $this->denyAccessUnlessGranted('FIGURE_CREATE');
+
         $figure = new Figure();
-        $figure->setMediaGallery([
-            '', '', ''
-        ]);
-        // $user = $this->getUser();
-        // $figure->setAuthor($user);
+        $figure->setMediaGallery(['']);
+
+        $user = $this->getUser();
+        $figure->setAuthor($user);
+
         $form = $this->createForm(FigureType::class, $figure);
         $form->handleRequest($request);
 

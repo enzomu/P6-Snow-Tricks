@@ -26,14 +26,19 @@
                         </div>
                         <div class="card-footer d-flex justify-content-between">
                             <a href="{{ path('figure', {'id': figure.id}) }}" class="btn btn-primary">Voir plus</a>
-                            <div>
-                                <a href="{{ path('update_figure', {'id': figure.id}) }}" class="btn btn-sm btn-primary">
-                                    <i class="fa fa-edit"></i>
-                                </a>
-                                <a href="{{ path('figure', {'id': figure.id}) }}" class="btn btn-sm btn-danger">
-                                    <i class="fa fa-trash"></i>
-                                </a>
-                            </div>
+                            {% if app.user and app.user.isVerified %}
+                                <div>
+                                    <a href="{{ path('update_figure', {'id': figure.id}) }}" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <form action="{{ path('trick_delete', {'id': figure.id}) }}" method="post" class="d-inline" id="delete-form-{{ figure.id }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_figure_' ~ figure.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr ?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

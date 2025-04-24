@@ -1,47 +1,90 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
-    <div class="container mt-4">
-        <h1 class="h3 mb-4 text-gray-800">Créer une nouvelle figure</h1>
+    {% if not app.user or not app.user.isVerified %}
+        <div class="alert alert-danger">
+            Vous n'avez pas les droits nécessaires pour accéder à cette page.
+        </div>
+    {% else %}
+        <div class="container mt-4">
+            <h1 class="h3 mb-4 text-gray-800">Créer une nouvelle figure</h1>
 
-        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true'}}) }}
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true', 'id': 'figure-form'}}) }}
 
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary">Média principal</h6>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Média principal</h6>
+                </div>
+                <div class="card-body text-center">
+                    {{ form_row(form.mainMedia, {'attr': {'class': 'form-control mt-3'}}) }}
+                </div>
             </div>
-            <div class="card-body text-center">
-                {{ form_row(form.mainMedia, {'attr': {'class': 'form-control mt-3'}}) }}
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Galerie de médias</h6>
+                    <button type="button" id="add-media" class="btn btn-primary btn-sm">+ Ajouter un média</button>
+                </div>
+                <div class="card-body" id="media-gallery-container"
+                     data-prototype="{{ form_widget(form.mediaGallery.vars.prototype)|e('html_attr') }}">
+                    {% for mediaField in form.mediaGallery %}
+                        <div class="mb-3 media-field">
+                            <div class="input-group">
+                                {{ form_widget(mediaField, {'attr': {'class': 'form-control'}}) }}
+                                <button type="button" class="btn btn-danger remove-media">×</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
+
+            <div class="form-group">
+                {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.category, {'attr': {'class': 'form-control'}}) }}
+            </div>
+
+            <div class="d-flex justify-content-end mt-3">
+                <button type="submit" class="btn btn-success">Créer la figure</button>
+            </div>
+
+            {{ form_end(form) }}
         </div>
 
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Galerie de médias</h6>
-            </div>
-            <div class="card-body">
-                {% for mediaField in form.mediaGallery %}
-                    <div class="mb-3">
-                        {{ form_widget(mediaField, {'attr': {'class': 'form-control'}}) }}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const container = document.getElementById('media-gallery-container');
+                const addButton = document.getElementById('add-media');
+
+                addButton.addEventListener('click', function() {
+                    const prototype = container.dataset.prototype
+                        ?? '__name__';
+
+                    const newIndex = container.querySelectorAll('.media-field').length;
+                    const newField = prototype.replace(/__name__/g, newIndex);
+
+                    const div = document.createElement('div');
+                    div.className = 'mb-3 media-field';
+                    div.innerHTML = `
+                    <div class="input-group">
+                        ${newField}
+                        <button type="button" class="btn btn-danger remove-media">×</button>
                     </div>
-                {% endfor %}
-            </div>
-        </div>
+                `;
 
-        <div class="form-group">
-            {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
-        </div>
-        <div class="form-group">
-            {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
-        </div>
-        <div class="form-group">
-            {{ form_row(form.category, {'attr': {'class': 'form-control'}}) }}
-        </div>
+                    container.appendChild(div);
+                });
 
-        <div class="d-flex justify-content-end mt-3">
-            <button type="submit" class="btn btn-success">Créer la figure</button>
-        </div>
-
-        {{ form_end(form) }}
-    </div>
+                container.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('remove-media')) {
+                        e.target.closest('.media-field').remove();
+                    }
+                });
+            });
+        </script>
+    {% endif %}
 {% endblock %}

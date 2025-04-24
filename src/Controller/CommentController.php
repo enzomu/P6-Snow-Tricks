@@ -16,12 +16,17 @@ class CommentController extends AbstractController
     #[Route('/figure/{id}/comment', name: 'add_comment', methods: ['POST'])]
     public function addComment(Figure $figure, Request $request, EntityManagerInterface $entityManager): Response
     {
+
+        if (!$this->getUser() || !$this->getUser()->isVerified()) {
+            throw $this->createAccessDeniedException('Vous devez être connecté et vérifié pour commenter.');
+        }
+
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-           /* $comment->setAuthor($this->getUser());*/
+            $comment->setAuthor($this->getUser());
             $comment->setFigure($figure);
             $comment->setCreatedAt(new \DateTimeImmutable());
 

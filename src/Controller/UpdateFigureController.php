@@ -16,6 +16,8 @@ class UpdateFigureController extends AbstractController
     {
         $figure = $figureRepository->findFigureById($id);
 
+        $this->denyAccessUnlessGranted('FIGURE_EDIT', $figure);
+
         $form = $this->createForm(FigureType::class, $figure);
         $form->handleRequest($request);
 
@@ -24,9 +26,7 @@ class UpdateFigureController extends AbstractController
                 return !empty(trim($media));
             });
             $figure->setMediaGallery($mediaGallery);
-
             $figure->setUpdatedAt(new \DateTimeImmutable());
-
 
             $figureRepository->save($figure);
 
@@ -38,5 +38,4 @@ class UpdateFigureController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
 }

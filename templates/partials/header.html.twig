@@ -9,9 +9,8 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="{{ path('home') }}">Accueil</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ path('home') }}">Figures</a></li>
                 {% if app.user %}
-                    <li class="nav-item"><a class="nav-link" href="{{ path('home') }}">Mon Compte</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('create_figure') }}">Créer une figure</a></li>
                     <li class="nav-item"><a class="nav-link text-danger" href="{{ path('app_logout') }}">Déconnexion</a></li>
                 {% else %}
                     <li class="nav-item"><a class="nav-link" href="{{ path('app_login') }}">Connexion</a></li>

@@ -5,12 +5,19 @@
     <div class="container mt-4">
         <div class="card">
             <div class="card-body position-relative">
-              {#  {% if app.user %}#}
-                    <div class="position-absolute top-0 end-0 m-2">
-                        <a href="{{ path('update_figure', {'id': figure.id}) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a> {#{ 'id': trick.id }#}
-                        {#<a href="{{ path('trick_delete') }}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>#}
+                {% if app.user and app.user.isVerified %}
+                <div class="position-absolute top-0 end-0 m-2">
+                    <a href="{{ path('update_figure', {'id': figure.id}) }}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form action="{{ path('trick_delete', {'id': figure.id}) }}" method="post" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete_figure_' ~ figure.id) }}">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Confirmer la suppression ?');">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
                     </div>
-               {# {% endif %}#}
+                {% endif %}
                 <h1 class="text-center">{{ figure.name }}</h1>
                 <div class="main-media-container mb-4" style="height: 60vh; min-height: 400px; max-height: 600px;">
                     {% if 'youtube.com/embed' in figure.mainMedia %}
@@ -63,9 +70,10 @@
             </div>
         </div>
 
+        {% if app.user and app.user.isVerified %}
         <div class="mt-4">
             <h4 class="mt-4">Ajouter un commentaire</h4>
-
+            {{ form_start(commentForm) }}
             {{ form_start(commentForm, {'action': path('figure', {'id': figure.id}), 'method': 'POST'}) }}
             <div class="mb-3">
                 {{ form_label(commentForm.content) }}
@@ -73,6 +81,12 @@
             </div>
             <button type="submit" class="btn btn-primary">Commenter</button>
             {{ form_end(commentForm) }}
+        </div>
+        {% else %}
+            <div class="alert alert-info mt-4">
+                <a href="{{ path('app_login') }}">Connectez-vous</a> et vérifiez votre email pour commenter.
+            </div>
+        {% endif %}
             <h4 class="mt-4">Commentaires</h4>
 
             {% for comment in comments %}
@@ -96,5 +110,4 @@
                 {{ knp_pagination_render(comments, 'pagination/pagination-custom.html.twig') }}
             </div>
         </div>
-    </div>
 {% endblock %}

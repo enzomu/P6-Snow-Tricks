@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Url;
 
 class FigureType extends AbstractType
 {
@@ -42,7 +43,7 @@ class FigureType extends AbstractType
                     'pattern' => 'https?://.+'
                 ],
                 'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\Url([
+                    new Url([
                         'message' => 'Veuillez entrer une URL valide',
                     ]),
                 ],
@@ -52,19 +53,22 @@ class FigureType extends AbstractType
                 'entry_options' => [
                     'label' => false,
                     'attr' => [
+                        'class' => 'form-control',
                         'placeholder' => 'https://www.youtube.com/embed/... ou https://example.com/image.jpg',
                         'pattern' => 'https?://.+'
                     ],
                     'constraints' => [
-                        new \Symfony\Component\Validator\Constraints\Url([
+                        new Url([
                             'message' => 'Veuillez entrer une URL valide',
                         ]),
                     ]
                 ],
-                'label' => 'Galerie de médias',
+                'label' => false,
                 'allow_add' => true,
                 'allow_delete' => true,
+                'prototype' => true,
                 'by_reference' => false,
+                'required' => false,
             ])
         ;
     }

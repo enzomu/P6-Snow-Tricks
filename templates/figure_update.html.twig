@@ -1,6 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
+    {% if not app.user or not app.user.isVerified %}
+    <div class="alert alert-danger">
+        Vous n'avez pas les droits nécessaires pour accéder à cette page.
+    </div>
+    {% else %}
     <div class="container mt-4">
         <h1 class="h3 mb-4 text-gray-800">Modifier la figure</h1>
 
@@ -91,4 +96,5 @@
         </div>
         {{ form_end(form) }}
     </div>
+    {% endif %}
 {% endblock %}
