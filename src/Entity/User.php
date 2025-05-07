@@ -119,7 +119,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -155,8 +154,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
     /**
@@ -180,7 +177,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeFigure(Figure $figure): static
     {
         if ($this->figures->removeElement($figure)) {
-            // set the owning side to null (unless already changed)
             if ($figure->getAuthor() === $this) {
                 $figure->setAuthor(null);
             }
@@ -210,7 +206,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeComment(Comment $comment): static
     {
         if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
             if ($comment->getAuthor() === $this) {
                 $comment->setAuthor(null);
             }

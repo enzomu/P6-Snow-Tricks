@@ -2,99 +2,370 @@
 
 {% block content %}
     {% if not app.user or not app.user.isVerified %}
-    <div class="alert alert-danger">
-        Vous n'avez pas les droits nécessaires pour accéder à cette page.
-    </div>
-    {% else %}
-    <div class="container mt-4">
-        <h1 class="h3 mb-4 text-gray-800">Modifier la figure</h1>
-
-        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true'}}) }}
-
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary">Média principal</h6>
-            </div>
-            <div class="card-body text-center">
-                {% if figure.mainMedia %}
-                    <div class="mb-3">
-                        {% if figure.mainMedia matches '{\.(jpg|jpeg|png|gif)$}' %}
-                            <img src="{{ figure.mainMedia }}" class="img-fluid" style="max-height: 315px;">
-                        {% else %}
-                            <iframe width="100%" height="315" src="{{ figure.mainMedia }}" allowfullscreen></iframe>
-                        {% endif %}
-                    </div>
-                {% endif %}
-                {{ form_row(form.mainMedia, {'attr': {'class': 'form-control mt-3'}}) }}
-            </div>
+        <div class="alert alert-danger">
+            Vous n'avez pas les droits nécessaires pour accéder à cette page.
         </div>
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Galerie de médias existants</h6>
+    {% else %}
+        <div class="container mt-4">
+            <h1 class="h3 mb-4 text-gray-800">Modifier la figure</h1>
+
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true', 'id': 'figure-form'}}) }}
+
+            <div class="form-group mb-3">
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.name) }}
             </div>
-            <div class="card-body">
-                <div class="row mb-4">
-                    {% if figure.mediaGallery is defined and figure.mediaGallery is not empty %}
-                        {% for media in figure.mediaGallery %}
-                            <div class="col-md-6 mb-3">
-                                <div class="card">
-                                    <div class="card-body">
-                                        {% if media matches '{\.(jpg|jpeg|png|gif)$}' %}
-                                            <img src="{{ media }}" class="img-fluid">
-                                        {% else %}
-                                            <iframe width="100%" height="200" src="{{ media }}" allowfullscreen></iframe>
-                                        {% endif %}
+
+            <div class="form-group mb-3">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.description) }}
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form_label(form.category) }}
+                {{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.category) }}
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Média principal</h6>
+                </div>
+                <div class="card-body">
+                    {{ form_widget(form.mainMedia, {'attr': {'class': 'form-control', 'id': 'main-media-input'}}) }}
+                    {{ form_errors(form.mainMedia) }}
+
+                    <div id="mainMediaPreview" class="mt-3 d-none">
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div id="mainMediaPreviewContent"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Galerie de médias</h6>
+                    <button type="button" id="add-media-button" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> Ajouter un média
+                    </button>
+                </div>
+                <div class="card-body">
+                    <button type="button" class="btn btn-primary d-block d-md-none w-100 mb-3" id="toggleMediaBtn">
+                        <i class="fas fa-images"></i> <span id="toggleBtnText">Afficher les médias</span>
+                    </button>
+
+                    <div id="media-collection" class="d-none d-md-block"
+                         data-index="{{ form.mediaGallery|length > 0 ? form.mediaGallery|length : 0 }}"
+                         data-prototype="{{ form_widget(form.mediaGallery.vars.prototype)|e('html_attr') }}">
+                        <div class="row" id="media-items">
+                            {% for mediaField in form.mediaGallery %}
+                                <div class="col-12 col-md-6 mb-3 media-item">
+                                    <div class="card h-100">
+                                        <div class="card-header p-2 d-flex justify-content-between align-items-center">
+                                            <span class="small">Média {{ loop.index }}</span>
+                                            <button type="button" class="btn btn-sm btn-danger btn-delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                        <div class="card-body p-3">
+                                            {{ form_widget(mediaField, {'attr': {'class': 'form-control media-url-input'}}) }}
+                                            <div class="media-preview mt-2"></div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="col-12">
-                            <p class="text-muted">Aucun média dans la galerie</p>
+                            {% endfor %}
                         </div>
-                    {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-3">
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+
+        <div class="modal fade" id="mediaModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ajouter un média</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="mediaUrlInput" class="form-label">URL du média</label>
+                            <input type="url" class="form-control" id="mediaUrlInput"
+                                   placeholder="https://example.com/image.jpg ou https://youtube.com/embed/...">
+                        </div>
+                        <div id="modalPreviewContainer" class="mt-3 d-none">
+                            <h6>Aperçu</h6>
+                            <div id="modalPreviewContent" class="border p-2"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-primary" id="saveMediaButton">Ajouter</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary">Gérer la galerie de médias</h6>
-                <a href="{{ path('figure_add_media', {'id': figure.id}) }}" class="btn btn-primary btn-sm">
-                    Ajouter un champ de média
-                </a>
-            </div>
-            <div class="card-body">
-                {% for key, mediaField in form.mediaGallery %}
-                    <div class="mb-3 d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            {{ form_widget(mediaField, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-                        <a href="{{ path('figure_remove_media', {'id': figure.id, 'index': key}) }}"
-                           class="btn btn-danger ml-2"
-                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce média ?')">
-                            Supprimer
-                        </a>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const mediaItems = document.getElementById('media-items');
+                const mediaCollection = document.getElementById('media-collection');
+                const addMediaButton = document.getElementById('add-media-button');
+                const toggleMediaBtn = document.getElementById('toggleMediaBtn');
+                const toggleBtnText = document.getElementById('toggleBtnText');
+                const mainMediaInput = document.getElementById('main-media-input');
+                const mainMediaPreview = document.getElementById('mainMediaPreview');
+                const mainMediaPreviewContent = document.getElementById('mainMediaPreviewContent');
+                const modalElement = document.getElementById('mediaModal');
+                const mediaUrlInput = document.getElementById('mediaUrlInput');
+                const modalPreviewContainer = document.getElementById('modalPreviewContainer');
+                const modalPreviewContent = document.getElementById('modalPreviewContent');
+                const saveMediaButton = document.getElementById('saveMediaButton');
+                const closeButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
+                const cancelButton = modalElement ? modalElement.querySelector('.btn-secondary') : null;
 
-        <div class="form-group">
-            {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
-        </div>
-        <div class="form-group">
-            {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
-        </div>
-        <div class="form-group">
-            {{ form_row(form.category, {'attr': {'class': 'form-control'}}) }}
-        </div>
+                let mediaVisible = false;
 
-        <div class="d-flex justify-content-end mt-3">
-           {# <a href="{{ path('figure_delete', {'id': figure.id}) }}" class="btn btn-danger m-1" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette figure ?')">Supprimer</a>#}
-            <button type="submit" class="btn btn-primary m-1">Enregistrer</button>
-        </div>
-        {{ form_end(form) }}
-    </div>
+                let mediaModal;
+                try {
+                    if (modalElement && window.bootstrap && window.bootstrap.Modal) {
+                        mediaModal = new bootstrap.Modal(modalElement);
+                    } else {
+                        console.warn("Bootstrap Modal n'est pas disponible ou l'élément de modale est introuvable");
+                    }
+                } catch (error) {
+                    console.error("Erreur lors de l'initialisation de la modale:", error);
+                }
+
+                function openModal() {
+                    if (mediaModal) {
+                        mediaModal.show();
+                    } else if (modalElement) {
+                        modalElement.classList.add('show');
+                        modalElement.style.display = 'block';
+                        document.body.classList.add('modal-open');
+
+                        if (!document.querySelector('.modal-backdrop')) {
+                            const backdrop = document.createElement('div');
+                            backdrop.className = 'modal-backdrop fade show';
+                            document.body.appendChild(backdrop);
+                        }
+                    }
+                }
+
+                function closeModal() {
+                    if (mediaModal) {
+                        mediaModal.hide();
+                    } else if (modalElement) {
+                        modalElement.classList.remove('show');
+                        modalElement.style.display = 'none';
+                        document.body.classList.remove('modal-open');
+
+                        const backdrop = document.querySelector('.modal-backdrop');
+                        if (backdrop) {
+                            backdrop.remove();
+                        }
+                    }
+                }
+
+                if (mainMediaInput) {
+                    mainMediaInput.addEventListener('input', function() {
+                        const url = this.value.trim();
+                        if (url && mainMediaPreview) {
+                            mainMediaPreview.classList.remove('d-none');
+                            renderPreview(url, mainMediaPreviewContent);
+                        } else if (mainMediaPreview) {
+                            mainMediaPreview.classList.add('d-none');
+                        }
+                    });
+
+                    if (mainMediaInput.value.trim() && mainMediaPreview) {
+                        mainMediaPreview.classList.remove('d-none');
+                        renderPreview(mainMediaInput.value.trim(), mainMediaPreviewContent);
+                    }
+                }
+
+                document.querySelectorAll('.media-url-input').forEach(function(input) {
+                    const url = input.value.trim();
+                    const previewContainer = input.nextElementSibling;
+
+                    if (url && previewContainer) {
+                        renderPreview(url, previewContainer);
+                    }
+
+                    input.addEventListener('input', function() {
+                        const container = this.nextElementSibling;
+                        if (container) {
+                            renderPreview(this.value.trim(), container);
+                        }
+                    });
+                });
+
+                if (toggleMediaBtn && mediaCollection && toggleBtnText) {
+                    toggleMediaBtn.addEventListener('click', function() {
+                        mediaVisible = !mediaVisible;
+                        if (mediaVisible) {
+                            mediaCollection.classList.remove('d-none');
+                            mediaCollection.classList.add('d-block');
+                            toggleBtnText.textContent = 'Masquer les médias';
+                        } else {
+                            mediaCollection.classList.remove('d-block');
+                            mediaCollection.classList.add('d-none', 'd-md-block');
+                            toggleBtnText.textContent = 'Afficher les médias';
+                        }
+                    });
+                }
+
+                if (addMediaButton && modalElement) {
+                    addMediaButton.addEventListener('click', function() {
+                        if (mediaUrlInput) {
+                            mediaUrlInput.value = '';
+                        }
+                        if (modalPreviewContainer) {
+                            modalPreviewContainer.classList.add('d-none');
+                        }
+
+                        const modalTitle = modalElement.querySelector('.modal-title');
+                        if (modalTitle) {
+                            modalTitle.textContent = 'Ajouter un média';
+                        }
+                        if (saveMediaButton) {
+                            saveMediaButton.textContent = 'Ajouter';
+                        }
+                        openModal();
+                    });
+                }
+
+                if (mediaUrlInput && modalPreviewContainer && modalPreviewContent) {
+                    mediaUrlInput.addEventListener('input', function() {
+                        const url = this.value.trim();
+                        if (url) {
+                            modalPreviewContainer.classList.remove('d-none');
+                            renderPreview(url, modalPreviewContent);
+                        } else {
+                            modalPreviewContainer.classList.add('d-none');
+                        }
+                    });
+                }
+
+                closeButtons.forEach(function(button) {
+                    button.addEventListener('click', closeModal);
+                });
+
+                if (cancelButton) {
+                    cancelButton.addEventListener('click', closeModal);
+                }
+
+                if (saveMediaButton && mediaCollection && mediaItems) {
+                    saveMediaButton.addEventListener('click', function() {
+                        if (!mediaUrlInput) return;
+
+                        const url = mediaUrlInput.value.trim();
+                        if (!url) {
+                            alert('Veuillez entrer une URL valide');
+                            return;
+                        }
+
+                        const index = parseInt(mediaCollection.dataset.index || '0');
+
+                        const prototype = mediaCollection.dataset.prototype;
+                        if (!prototype) {
+                            console.error("Prototype de collection introuvable");
+                            return;
+                        }
+
+                        const newWidget = prototype.replace(/__name__/g, index);
+
+                        const mediaItem = document.createElement('div');
+                        mediaItem.className = 'col-12 col-md-6 mb-3 media-item';
+                        mediaItem.innerHTML = `
+                            <div class="card h-100">
+                                <div class="card-header p-2 d-flex justify-content-between align-items-center">
+                                    <span class="small">Média ${index + 1}</span>
+                                    <button type="button" class="btn btn-sm btn-danger btn-delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body p-3">
+                                    ${newWidget}
+                                    <div class="media-preview mt-2"></div>
+                                </div>
+                            </div>
+                        `;
+
+                        mediaItems.appendChild(mediaItem);
+
+                        const input = mediaItem.querySelector('input');
+                        if (input) {
+                            input.value = url;
+                            input.classList.add('media-url-input');
+
+                            input.addEventListener('input', function() {
+                                const previewContainer = this.nextElementSibling;
+                                if (previewContainer) {
+                                    renderPreview(this.value.trim(), previewContainer);
+                                }
+                            });
+                        }
+
+                        const previewContainer = mediaItem.querySelector('.media-preview');
+                        if (previewContainer) {
+                            renderPreview(url, previewContainer);
+                        }
+
+                        mediaCollection.dataset.index = (index + 1).toString();
+
+                        const deleteButton = mediaItem.querySelector('.btn-delete');
+                        if (deleteButton) {
+                            deleteButton.addEventListener('click', function() {
+                                if (confirm('Êtes-vous sûr de vouloir supprimer ce média ?')) {
+                                    mediaItem.remove();
+                                }
+                            });
+                        }
+
+                        closeModal();
+                    });
+                }
+
+                document.querySelectorAll('.btn-delete').forEach(function(button) {
+                    button.addEventListener('click', function() {
+                        if (confirm('Êtes-vous sûr de vouloir supprimer ce média ?')) {
+                            this.closest('.media-item').remove();
+                        }
+                    });
+                });
+
+                function renderPreview(url, container) {
+                    if (!container) return;
+
+                    if (!url) {
+                        container.innerHTML = '';
+                        return;
+                    }
+
+                    if (url.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+                        container.innerHTML = `<img src="${url}" alt="Aperçu" class="img-fluid" style="max-height: 150px;">`;
+                    } else if (url.includes('youtube') || url.includes('embed')) {
+                        container.innerHTML = `<div class="ratio ratio-16x9"><iframe src="${url}" frameborder="0" allowfullscreen></iframe></div>`;
+                    } else {
+                        container.innerHTML = '';
+                    }
+                }
+            });
+        </script>
     {% endif %}
 {% endblock %}

@@ -5,6 +5,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (!scrollButton || !heroSection || !figuresSection) return;
 
+    function positionScrollButton() {
+        if (window.innerWidth < 992) {
+            scrollButton.style.bottom = "70px";
+        } else {
+            scrollButton.style.bottom = "20px";
+        }
+    }
+
+    positionScrollButton();
+
+    window.addEventListener('resize', positionScrollButton);
+
     $.fn.stop = function() { return this; };
     $.fn.animate = function() { return this; };
 

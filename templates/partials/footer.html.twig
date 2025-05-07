@@ -1,7 +1,19 @@
-<footer class="bg-dark text-white text-center py-3">
+<footer class="bg-dark text-white text-center py-3 d-none d-lg-block">
     <div class="container">
         <p>&copy; 2024 SnowTricks - Tous droits réservés</p>
         <a href="{{ path('home') }}" class="text-white">Mentions Légales</a> |
         <a href="{{ path('home') }}" class="text-white">Contact</a>
     </div>
 </footer>
+
+<div class="fixed-bottom bg-white border-top py-3 d-flex d-lg-none justify-content-around align-items-center">
+    <a href="{{ path('home') }}" class="text-dark" title="Accueil"><i class="fas fa-home fa-lg"></i></a>
+
+    {% if app.user %}
+        <a href="{{ path('create_figure') }}" class="text-dark" title="Créer"><i class="fas fa-plus fa-lg"></i></a>
+        <a href="{{ path('app_logout') }}" class="text-danger" title="Déconnexion"><i class="fas fa-sign-out-alt fa-lg"></i></a>
+    {% else %}
+        <a href="{{ path('app_login') }}" class="text-dark" title="Connexion"><i class="fas fa-sign-in-alt fa-lg"></i></a>
+        <a href="{{ path('app_register') }}" class="text-dark" title="Inscription"><i class="fas fa-user-plus fa-lg"></i></a>
+    {% endif %}
+</div>

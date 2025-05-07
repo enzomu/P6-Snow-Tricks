@@ -1,0 +1,12 @@
+{% block title %}Réinitialisation d'Email{% endblock %}
+
+{% block content %}
+    <h1>Bonjour</h1>
+
+    <p>Pour réinitialiser votre mot de passe cliquez sur le lien suivant</p>
+
+    <a href="{{ resetUrl }}">{{ resetUrl }}</a>
+
+    <p>Ce lien expira dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+
+{% endblock %}

@@ -7,8 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: FigureRepository::class)]
+#[UniqueEntity(fields: ['name'], message: 'Une figure avec ce nom existe déjà.')]
 class Figure
 {
     #[ORM\Id]
@@ -17,18 +20,35 @@ class Figure
     private ?int $id = null;
 
     #[ORM\Column(length: 100, unique: true)]
+    #[Assert\NotBlank(message: 'Le nom de la figure est obligatoire.')]
+    #[Assert\Length(
+        min: 3,
+        max: 100,
+        minMessage: 'Le nom doit comporter au moins {{ limit }} caractères.',
+        maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères.'
+    )]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: 'La description de la figure est obligatoire.')]
+    #[Assert\Length(
+        min: 10,
+        minMessage: 'La description doit comporter au moins {{ limit }} caractères.'
+    )]
     private ?string $description = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'La catégorie de la figure est obligatoire.')]
     private ?string $category = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Url(message: 'L\'URL du média principal n\'est pas valide.')]
     private ?string $mainMedia = null;
 
     #[ORM\Column(type: 'json', nullable: true)]
+    #[Assert\All([
+        new Assert\Url(message: 'Une des URLs de la galerie de médias n\'est pas valide.')
+    ])]
     private ?array $mediaGallery = [];
 
     #[ORM\ManyToOne(inversedBy: 'figures')]
@@ -172,7 +192,6 @@ class Figure
     public function removeComment(Comment $comment): static
     {
         if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
             if ($comment->getFigure() === $this) {
                 $comment->setFigure(null);
             }

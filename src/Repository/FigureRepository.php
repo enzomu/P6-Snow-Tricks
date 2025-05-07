@@ -16,11 +16,11 @@ use Knp\Component\Pager\PaginatorInterface;
  */
 class FigureRepository extends ServiceEntityRepository
 {
-    private EntityManagerInterface $entityManager;
-    public function __construct(ManagerRegistry $registry, EntityManagerInterface $entityManager)
+
+    public function __construct(ManagerRegistry $registry, private EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, Figure::class);
-        $this->entityManager = $entityManager;
+
     }
     public function findAllFigures(): array
     {
