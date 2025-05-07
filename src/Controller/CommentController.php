@@ -10,13 +10,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class CommentController extends AbstractController
 {
     #[Route('/figure/{id}/comment', name: 'add_comment', methods: ['POST'])]
-    public function addComment(Figure $figure, Request $request, EntityManagerInterface $entityManager): Response
-    {
-
+    public function addComment(
+        Figure $figure,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SluggerInterface $slugger
+    ): Response {
         if (!$this->getUser() || !$this->getUser()->isVerified()) {
             throw $this->createAccessDeniedException('Vous devez être connecté et vérifié pour commenter.');
         }
@@ -33,9 +37,14 @@ class CommentController extends AbstractController
             $entityManager->persist($comment);
             $entityManager->flush();
 
-           /* $this->addFlash('success', 'Commentaire ajouté avec succès.');*/
+            $this->addFlash('success', 'Commentaire ajouté avec succès.');
         }
 
-        return $this->redirectToRoute('update_figure', ['id' => $figure->getId()]);
+        $slug = strtolower($slugger->slug($figure->getName())->toString());
+
+        return $this->redirectToRoute('figure', [
+            'id' => $figure->getId(),
+            'slug' => $slug
+        ]);
     }
 }

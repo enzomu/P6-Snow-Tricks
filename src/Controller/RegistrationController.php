@@ -35,7 +35,6 @@ class RegistrationController extends AbstractController
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
 
-            // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
             $entityManager->persist($user);
@@ -43,7 +42,6 @@ class RegistrationController extends AbstractController
 
             $security->login($user, AppCustomAuthenticator::class, 'main');
 
-            // generate a signed url and email it to the user
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
                     ->from(new Address('test@example.com', 'Mail Bot'))
@@ -67,7 +65,6 @@ class RegistrationController extends AbstractController
     public function verifyUserEmail(Request $request, TranslatorInterface $translator, EntityManagerInterface $em): Response
     {
         try {
-            // Récupérer l'ID directement depuis la requête
             $id = $request->get('id');
 
             if (!$id) {
@@ -80,10 +77,8 @@ class RegistrationController extends AbstractController
                 throw new \RuntimeException('Utilisateur non trouvé');
             }
 
-            // Vérifier l'email - cette méthode va modifier isVerified et enregistrer l'utilisateur
             $this->emailVerifier->handleEmailConfirmation($request, $user);
 
-            // Message de succès
             $this->addFlash('success', 'Votre email a été vérifié avec succès.');
             return $this->redirectToRoute('home');
         } catch (\RuntimeException $exception) {

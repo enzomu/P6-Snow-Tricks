@@ -2,8 +2,6 @@
 
 {% block title %}Accueil - SnowTricks{% endblock %}
 
-{% dump(figures) %}
-
 {% block content %}
     <section class="hero-section">
         <div class="hero-content text-center">
@@ -18,41 +16,50 @@
         <div class="row">
             {% for figure in figures %}
                 <div class="col-md-4 mb-4">
-                    <div class="card">
-                       {# <img src="{{ asset('uploads/' ~ figure.image) }}" class="card-img-top" alt="{{ figure.name }}">#}
-                        <div class="card-body">
-                            <h5 class="card-title">{{ figure.name }}</h5>
-                            <p class="card-text">{{ figure.description|slice(0, 100) }}</p>{#{'id': figure.id}#}
-                        </div>
-                        <div class="card-footer d-flex justify-content-between">
-                            <a href="{{ path('figure', {'id': figure.id}) }}" class="btn btn-primary">Voir plus</a>
-                            {% if app.user and app.user.isVerified %}
-                                <div>
-                                    <a href="{{ path('update_figure', {'id': figure.id}) }}" class="btn btn-sm btn-primary">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
-                                    <form action="{{ path('trick_delete', {'id': figure.id}) }}" method="post" class="d-inline" id="delete-form-{{ figure.id }}">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_figure_' ~ figure.id) }}">
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr ?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
+                    <div class="card h-100">
+                        <div class="card-media-container" style="height: 200px; overflow: hidden;">
+                            {% if figure.mainMedia %}
+                                {% if 'youtube.com/embed' in figure.mainMedia %}
+                                    <iframe src="{{ figure.mainMedia }}"
+                                            class="w-100 h-100"
+                                            style="border: none; object-fit: cover;"
+                                            allowfullscreen></iframe>
+                                {% else %}
+                                    <img src="{{ figure.mainMedia }}"
+                                         class="w-100 h-100"
+                                         style="object-fit: cover;"
+                                         alt="Image principale de la figure">
+                                {% endif %}
+                            {% else %}
+                                <img src="{{ asset('images/default-image.jpg') }}"
+                                     class="w-100 h-100"
+                                     style="object-fit: cover;"
+                                     alt="Image par défaut de la figure">
                             {% endif %}
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ figure.name }}</h5>
+                            <p class="card-text flex-grow-1">{{ figure.description|slice(0, 100) }}</p>
+                            <div class="card-footer p-0 border-0 bg-transparent">
+                                <a href="{{ path('figure', {id: figure.id, slug: figure.name|slugify}) }}" class="btn btn-primary w-100">Voir plus</a>
+                                {% if app.user and app.user.isVerified %}
+                                    <div class="d-flex justify-content-between mt-2">
+                                        <a href="{{ path('update_figure', {'id': figure.id}) }}" class="btn btn-sm btn-primary">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <form action="{{ path('trick_delete', {'id': figure.id}) }}" method="post" class="d-inline" id="delete-form-{{ figure.id }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_figure_' ~ figure.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr ?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
-
-       {#  Pagination
-        <div class="pagination">
-            {% if figures.previousPage is not null %}
-                <a href="{{ path('home', {'page': figures.previousPage}) }}" class="btn btn-secondary">Précédent</a>
-            {% endif %}
-            {% if figures.nextPage is not null %}
-                <a href="{{ path('home', {'page': figures.nextPage}) }}" class="btn btn-secondary">Suivant</a>
-            {% endif %}
-        </div>#}
     </section>
 {% endblock %}

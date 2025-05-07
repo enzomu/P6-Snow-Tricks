@@ -1,0 +1,46 @@
+<div class="row g-3" id="mediaGalleryContainer">
+    {% if figure.mainMedia %}
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Média principal
+                </div>
+                <div class="card-body p-0 position-relative">
+                    {% if figure.mainMedia matches '{\.(jpg|jpeg|png|gif|webp)$}' %}
+                        <img src="{{ figure.mainMedia }}" class="img-fluid w-100" style="max-height: 400px; object-fit: cover;">
+                    {% else %}
+                        <div class="ratio ratio-16x9">
+                            <iframe src="{{ figure.mainMedia }}" allowfullscreen></iframe>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% for key, media in figure.mediaGallery %}
+    <div class="col-md-4 mb-3 media-item" data-index="{{ key }}" data-url="{{ media }}">
+        <div class="card h-100">
+            <div class="card-header p-2 d-flex justify-content-between align-items-center">
+                <span class="small">Média {{ key + 1 }}</span>
+                <div>
+                    <button type="button" class="btn btn-sm btn-primary edit-media" data-index="{{ key }}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger delete-media" data-index="{{ key }}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                {% if media matches '{\.(jpg|jpeg|png|gif|webp)$}' %}
+                    <img src="{{ media }}" class="img-fluid w-100" style="height: 120px; object-fit: cover;">
+                {% else %}
+                    <div class="ratio ratio-16x9">
+                        <iframe src="{{ media }}" allowfullscreen></iframe>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endfor %}
