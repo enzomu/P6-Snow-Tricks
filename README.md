@@ -13,7 +13,6 @@ php bin/console doctrine:schema:create
 
 
 importer les données:
-mysql -u root -p snowtricks < data/_localhost__2_-2025_05_07_19_31_21-dump.sql
-
+php bin/console doctrine:fixtures:load
 
 symfony server:start
