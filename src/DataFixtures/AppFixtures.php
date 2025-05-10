@@ -137,7 +137,7 @@ class AppFixtures extends Fixture
         $figure->setName('Method Air');
         $figure->setCategory($categories[4]); // Old school
         $figure->setDescription('Figure classique où le rider saisit la carre arrière avec sa main arrière, tout en cambrant le dos et en remontant les genoux.');
-        $figure->setMainMedia('https://picsum.photos/800/600?random=11'); // Placeholder
+        $figure->setMainMedia('https://picsum.photos/800/600?random=11');
         $figure->setMediaGallery([
             'https://www.youtube.com/embed/CzDjM7h_Fwo'
         ]);

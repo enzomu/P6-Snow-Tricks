@@ -42,13 +42,9 @@ class Figure
     private ?string $category = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Assert\Url(message: 'L\'URL du média principal n\'est pas valide.')]
     private ?string $mainMedia = null;
 
     #[ORM\Column(type: 'json', nullable: true)]
-    #[Assert\All([
-        new Assert\Url(message: 'Une des URLs de la galerie de médias n\'est pas valide.')
-    ])]
     private ?array $mediaGallery = [];
 
     #[ORM\ManyToOne(inversedBy: 'figures')]
@@ -61,11 +57,23 @@ class Figure
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    /**
-     * @var Collection<int, Comment>
-     */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'figure', orphanRemoval: true)]
     private Collection $comments;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $mainMediaFile = null;
+
+    #[Assert\File(
+        maxSize: '5M',
+        mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+        mimeTypesMessage: 'Veuillez uploader une image valide (JPG, PNG, GIF ou WEBP)'
+    )]
+    private $mainMediaFileUpload;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $mediaGalleryFiles = [];
+
+    private $mediaGalleryFileUpload;
 
     public function __construct()
     {
@@ -85,7 +93,6 @@ class Figure
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -97,7 +104,6 @@ class Figure
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -109,7 +115,6 @@ class Figure
     public function setCategory(string $category): static
     {
         $this->category = $category;
-
         return $this;
     }
 
@@ -143,7 +148,6 @@ class Figure
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
-
         return $this;
     }
 
@@ -155,7 +159,6 @@ class Figure
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
@@ -167,13 +170,9 @@ class Figure
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Comment>
-     */
     public function getComments(): Collection
     {
         return $this->comments;
@@ -185,7 +184,6 @@ class Figure
             $this->comments->add($comment);
             $comment->setFigure($this);
         }
-
         return $this;
     }
 
@@ -196,7 +194,58 @@ class Figure
                 $comment->setFigure(null);
             }
         }
+        return $this;
+    }
 
+    public function getMainMediaFile(): ?string
+    {
+        return $this->mainMediaFile;
+    }
+
+    public function setMainMediaFile(?string $mainMediaFile): self
+    {
+        $this->mainMediaFile = $mainMediaFile;
+        return $this;
+    }
+
+    public function getMainMediaFileUpload()
+    {
+        return $this->mainMediaFileUpload;
+    }
+
+    public function setMainMediaFileUpload($mainMediaFileUpload): self
+    {
+        $this->mainMediaFileUpload = $mainMediaFileUpload;
+        return $this;
+    }
+
+    public function getMediaGalleryFiles(): ?array
+    {
+        return $this->mediaGalleryFiles;
+    }
+
+    public function setMediaGalleryFiles(?array $mediaGalleryFiles): self
+    {
+        $this->mediaGalleryFiles = $mediaGalleryFiles;
+        return $this;
+    }
+
+    public function getMediaGalleryFileUpload()
+    {
+        return $this->mediaGalleryFileUpload;
+    }
+
+    public function setMediaGalleryFileUpload($mediaGalleryFileUpload): self
+    {
+        $this->mediaGalleryFileUpload = $mediaGalleryFileUpload;
+        return $this;
+    }
+
+    public function addMediaGalleryFile(string $mediaFile): self
+    {
+        if (!in_array($mediaFile, $this->mediaGalleryFiles)) {
+            $this->mediaGalleryFiles[] = $mediaFile;
+        }
         return $this;
     }
 }
