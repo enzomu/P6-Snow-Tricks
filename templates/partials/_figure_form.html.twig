@@ -1,0 +1,104 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'true', 'id': 'figure-form', 'enctype': 'multipart/form-data'}}) }}
+
+<div class="form-group mb-3">
+    {{ form_label(form.name) }}
+    {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.name) }}
+</div>
+
+<div class="form-group mb-3">
+    {{ form_label(form.description) }}
+    {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.description) }}
+</div>
+
+<div class="form-group mb-3">
+    {{ form_label(form.category) }}
+    {{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.category) }}
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Média principal</h6>
+    </div>
+    <div class="card-body">
+        <ul class="nav nav-tabs" id="mainMediaTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="url-tab" data-bs-toggle="tab" data-bs-target="#url" type="button" role="tab" aria-controls="url" aria-selected="true">Par URL</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="file-tab" data-bs-toggle="tab" data-bs-target="#file" type="button" role="tab" aria-controls="file" aria-selected="false">Par fichier</button>
+            </li>
+        </ul>
+
+        <div class="tab-content pt-3" id="mainMediaTabsContent">
+            <div class="tab-pane fade show active" id="url" role="tabpanel" aria-labelledby="url-tab">
+                {{ form_widget(form.mainMedia, {'attr': {'class': 'form-control', 'id': 'main-media-input'}}) }}
+                {{ form_errors(form.mainMedia) }}
+            </div>
+            <div class="tab-pane fade" id="file" role="tabpanel" aria-labelledby="file-tab">
+                {{ form_widget(form.mainMediaFileUpload, {'attr': {'class': 'form-control'}}) }}
+                <small class="form-text text-muted">Formats acceptés: JPG, PNG, GIF, WEBP. Taille max: 5Mo</small>
+                {{ form_errors(form.mainMediaFileUpload) }}
+            </div>
+        </div>
+
+        <div id="mainMediaPreview" class="mt-3 d-none">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div id="mainMediaPreviewContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">Galerie de médias</h6>
+        <div>
+            <button type="button" id="add-media-button" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Ajouter une URL
+            </button>
+            <label for="{{ form.mediaGalleryFileUpload.vars.id }}" class="btn btn-success btn-sm">
+                <i class="fas fa-upload"></i> Uploader des fichiers
+            </label>
+            {{ form_widget(form.mediaGalleryFileUpload, {'attr': {'class': 'd-none', 'id': 'gallery-file-upload', 'multiple': 'multiple', 'accept': 'image/jpeg,image/png,image/gif,image/webp'}}) }}
+        </div>
+    </div>
+    <div class="card-body">
+        <button type="button" class="btn btn-primary d-block d-md-none w-100 mb-3" id="toggleMediaBtn">
+            <i class="fas fa-images"></i> <span id="toggleBtnText">Afficher les médias</span>
+        </button>
+
+        <div id="media-collection" class="d-none d-md-block"
+             data-index="{{ form.mediaGallery|length > 0 ? form.mediaGallery|length : 0 }}"
+             data-prototype="{{ form_widget(form.mediaGallery.vars.prototype)|e('html_attr') }}">
+            <div class="row" id="media-items">
+                {% for mediaField in form.mediaGallery %}
+                    <div class="col-12 col-md-6 mb-3 media-item">
+                        <div class="card h-100">
+                            <div class="card-header p-2 d-flex justify-content-between align-items-center">
+                                <span class="small">Média {{ loop.index }}</span>
+                                <button type="button" class="btn btn-sm btn-danger btn-delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                            <div class="card-body p-3">
+                                {{ form_widget(mediaField, {'attr': {'class': 'form-control media-url-input'}}) }}
+                                <div class="media-preview mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-end mt-3">
+    <button type="submit" class="btn btn-{{ submitButtonColor|default('primary') }}">{{ submitButtonText }}</button>
+</div>
+
+{{ form_end(form) }}
